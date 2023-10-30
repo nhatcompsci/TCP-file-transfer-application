@@ -1,4 +1,4 @@
-import socket
+import socket, struct
 
 FORMAT = "utf-8"
 
@@ -7,8 +7,8 @@ def send_file(remote_ip, remote_port, local_file):
         client.connect((remote_ip, remote_port))
 
         with open(local_file, 'rb') as f:
-            file_size = len(file_data)
-            client.send(file_size)
+            file_size = len(f)
+            client.send(struct.pack('!I', file_size))
             print(f"server: {client.recv(1024).decode(FORMAT)}")
 
             file_name = local_file
