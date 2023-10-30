@@ -7,15 +7,16 @@ def send_file(remote_ip, remote_port, local_file):
         client.connect((remote_ip, remote_port))
 
         with open(local_file, 'rb') as f:
-            file_size = len(f)
+            file_data = f.read()
+            file_size = len(file_data)
+            file_name = local_file
+
             client.send(struct.pack('!I', file_size))
             print(f"server: {client.recv(1024).decode(FORMAT)}")
 
-            file_name = local_file
             client.send(file_name.encode(FORMAT))
             print(f"server: {client.recv(1024).decode(FORMAT)}")
 
-            file_data = f.read()
             client.send(file_data.encode(FORMAT))
             print(f"server: {client.recv(1024).decode(FORMAT)}")
             
