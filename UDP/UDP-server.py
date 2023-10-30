@@ -1,7 +1,7 @@
 import socket, os, struct
 
 FORMAT = "utf-8"
-BUFFER_ADDR_SIZE = 1024
+BUFFER_ADDR_SIZE = 102400
 
 def get_local_ip():
     try:
@@ -20,9 +20,9 @@ def receive_file(server_port, ip):
         print(f"Server ({ip}) is listening on port {server_port}...")
 
         while True:
-            header, client = server.recvfrom(24+BUFFER_ADDR_SIZE)
-            (file_size, file_name) = header
-            server.sendto("Receive file's name and size'".encode(FORMAT))
+            data, client = server.recvfrom(BUFFER_ADDR_SIZE)
+
+            (file_size, file_name, file_data) = struct.unpack(f'!I20s{file_size}s', data)
             file_name = file_name.decode(FORMAT).strip('\x00')
             print(f"Receive {file_name} with size {file_size} from {client}")
 
@@ -30,11 +30,7 @@ def receive_file(server_port, ip):
                 os.makedirs("received_files")
 
             with open(f'received_files/{str(file_name)}', 'wb') as received_file:
-                (file_data, ), client = server.recvfrom(file_size+BUFFER_ADDR_SIZE)
-                server.sendto("Receive file data".encode(FORMAT))
-                print(f"Receive file data from {client}")
                 received_file.write(file_data)
-                
                 received_file.close()
 
                 print(f"File {file_name} received. Stored as received_files/{file_name}")
