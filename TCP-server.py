@@ -7,7 +7,7 @@ def receive_file(server_port):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
         server.bind((IP, server_port))
         server.listen()
-        print("Server is listening...")
+        print(f"Server ({IP}) is listening on port {server_port}...")
         while True:
             conn, addr = server.accept()
             print(f'Connected by {addr}')
