@@ -11,7 +11,7 @@ def send_file(remote_ip, remote_port, local_file):
             file_size = len(file_data)
             file_name = local_file[:24]
 
-            client.send(struct.pack('4s', file_size))
+            client.send(struct.pack('!I', file_size.encode(FORMAT)))
             print(f"server: {client.recv(1024).decode(FORMAT)}")
 
             client.send(struct.pack('20s', file_name.encode(FORMAT)))
