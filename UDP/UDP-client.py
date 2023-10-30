@@ -11,7 +11,7 @@ def send_file(remote_ip, remote_port, local_file):
             file_size = len(file_data)
             file_name = local_file[:20]
 
-            client.sendto(struct.pack(f'!I20s{file_size}s', file_size, file_name, file_data), server_address,)
+            client.sendto(struct.pack(f'!I20s{file_size}s', file_size, file_name.encode(FORMAT), file_data), server_address,)
             print(f"server: {client.recvfrom(1024).decode(FORMAT)}")
             
             print(f"File {local_file} sent.")
