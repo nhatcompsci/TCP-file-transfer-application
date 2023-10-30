@@ -24,6 +24,7 @@ def receive_file(server_port, ip):
 
             (file_size, file_name, file_data) = struct.unpack(f'!I20s{len(data)-24}s', data)
             file_name = file_name.decode(FORMAT).strip('\x00')
+            server.sendto(f"REceive packet! Received {file_name} with size {file_size}", client)
             print(f"Receive {file_name} with size {file_size} from {client}")
 
             if not os.path.exists("received_files"):
