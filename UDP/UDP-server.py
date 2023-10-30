@@ -20,7 +20,8 @@ def receive_file(server_port, ip):
         print(f"Server ({ip}) is listening on port {server_port}...")
 
         while True:
-            (file_size, file_name), client = server.recvfrom(24+BUFFER_ADDR_SIZE)
+            header, client = server.recvfrom(24+BUFFER_ADDR_SIZE)
+            (file_size, file_name) = header
             server.sendto("Receive file's name and size'".encode(FORMAT))
             file_name = file_name.decode(FORMAT).strip('\x00')
             print(f"Receive {file_name} with size {file_size} from {client}")
