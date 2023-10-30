@@ -35,7 +35,7 @@ def receive_file(server_port, ip):
 
                 print(f"File {file_name} received. Stored as received_files/{file_name}")
                 
-            server.close()
+        server.close()
 
 if __name__ == "__main__":
     import sys
