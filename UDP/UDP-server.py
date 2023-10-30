@@ -14,7 +14,7 @@ def get_local_ip():
         return None
 
 def receive_file(server_port, ip):
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
+    with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as server:
         
         server.bind((ip, server_port))
         print(f"Server ({ip}) is listening on port {server_port}...")
@@ -42,7 +42,7 @@ def receive_file(server_port, ip):
 if __name__ == "__main__":
     import sys
     if len(sys.argv) != 2:
-        print("Usage: python3 TCP-server.py <local-port-on-machine-1>")
+        print("Usage: python3 UDP-server.py <local-port-on-machine-1>")
         sys.exit(1)
     print("Server is starting.")
 

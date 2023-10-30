@@ -22,10 +22,7 @@ def send_file(remote_ip, remote_port, local_file):
             
             print(f"File {local_file} sent.")
             f.close()
-
         client.close()
-
-        
 
 if __name__ == "__main__":
     import sys
