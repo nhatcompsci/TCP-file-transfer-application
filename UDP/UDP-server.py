@@ -1,6 +1,7 @@
 import socket, os, struct
 
 FORMAT = "utf-8"
+BUFFER_ADDR_SIZE = 1024
 
 def get_local_ip():
     try:
@@ -15,26 +16,26 @@ def get_local_ip():
 
 def receive_file(server_port, ip):
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as server:
-        
         server.bind((ip, server_port))
         print(f"Server ({ip}) is listening on port {server_port}...")
+
         while True:
-
-            (file_size,) = struct.unpack("!I", server.recvfrom(4))  # 4 bytes for file size, 
-            server.sendto("Receive filesize".encode(FORMAT))
-
-            file_name = server.recvfrom(20).decode(FORMAT).strip('\x00') # 20 bytes for file name
-            print(f"Receive {file_name} with size {file_size}")
-            server.sendto("Receive filename".encode(FORMAT))
+            (file_size, file_name), client = server.recvfrom(24+BUFFER_ADDR_SIZE)
+            server.sendto("Receive file's name and size'".encode(FORMAT))
+            file_name = file_name.decode(FORMAT).strip('\x00')
+            print(f"Receive {file_name} with size {file_size} from {client}")
 
             if not os.path.exists("received_files"):
                 os.makedirs("received_files")
 
             with open(f'received_files/{str(file_name)}', 'wb') as received_file:
-                data = server.recvfrom(file_size)
-                received_file.write(data)
+                (file_data, ), client = server.recvfrom(file_size+BUFFER_ADDR_SIZE)
+                server.sendto("Receive file data".encode(FORMAT))
+                print(f"Receive file data from {client}")
+                received_file.write(file_data)
+                
                 received_file.close()
-                server.sendto("Received filedata".encode(FORMAT))
+
                 print(f"File {file_name} received. Stored as received_files/{file_name}")
                 
             server.close()

@@ -4,20 +4,17 @@ FORMAT = "utf-8"
 
 def send_file(remote_ip, remote_port, local_file):
     with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as client:
-        client.connect((remote_ip, remote_port))
+        server_address = (remote_ip, remote_port)
 
         with open(local_file, 'rb') as f:
             file_data = f.read()
             file_size = len(file_data)
             file_name = local_file[:20]
 
-            client.sendto(struct.pack('!I', file_size))
+            client.sendto(struct.pack('!I20s', file_size, file_name.encode(FORMAT)), server_address)
             print(f"server: {client.recvfrom(1024).decode(FORMAT)}")
 
-            client.sendto(struct.pack('20s', file_name.encode(FORMAT)))
-            print(f"server: {client.recvfrom(1024).decode(FORMAT)}")
-
-            client.sendto(struct.pack(f'{file_size}s', file_data))
+            client.sendto(struct.pack(f'{file_size}s', file_data), server_address)
             print(f"server: {client.recvfrom(1024).decode(FORMAT)}")
             
             print(f"File {local_file} sent.")
