@@ -1,4 +1,4 @@
-import socket
+import socket, os
 
 FORMAT = "utf-8"
 
@@ -30,6 +30,9 @@ def receive_file(server_port, ip):
             print("Receive file: ", file_name)
             conn.send("Receive filename".encode(FORMAT))
 
+            if not os.path.exists("received_files"):
+                os.makedirs("received_files")
+                
             with open(f'received_files/{file_name}', 'wb') as received_file:
                 data = conn.recv(file_size)
                 received_file.write(data.decode(FORMAT))

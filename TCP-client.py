@@ -14,10 +14,10 @@ def send_file(remote_ip, remote_port, local_file):
             client.send(struct.pack('!I', file_size))
             print(f"server: {client.recv(1024).decode(FORMAT)}")
 
-            client.send(file_name.encode(FORMAT))
+            client.send(file_name)
             print(f"server: {client.recv(1024).decode(FORMAT)}")
 
-            client.send(file_data.encode(FORMAT))
+            client.send(file_data)
             print(f"server: {client.recv(1024).decode(FORMAT)}")
             
             print(f"File {local_file} sent.")
