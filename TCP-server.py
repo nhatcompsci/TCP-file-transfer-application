@@ -23,7 +23,7 @@ def receive_file(server_port, ip):
             conn, addr = server.accept()
             print(f'Connected by {addr}')
 
-            file_size = conn.recv(4)  # 4 bytes for file size, 
+            file_size = conn.recv(4).decode(FORMAT)  # 4 bytes for file size, 
             conn.send("Receive filesize".encode(FORMAT))
 
             file_name = conn.recv(20).decode(FORMAT).strip('\x00') # 20 bytes for file name
