@@ -22,7 +22,7 @@ def receive_file(server_port, ip):
         while True:
             data, client = server.recvfrom(BUFFER_ADDR_SIZE)
 
-            (file_size, file_name, file_data) = struct.unpack(f'!I20s{file_size}s', data)
+            (file_size, file_name, file_data) = struct.unpack(f'!I20s{len(data)-24}s', data)
             file_name = file_name.decode(FORMAT).strip('\x00')
             print(f"Receive {file_name} with size {file_size} from {client}")
 
