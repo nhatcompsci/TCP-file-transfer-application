@@ -32,8 +32,8 @@ def receive_file(server_port, ip):
 
             if not os.path.exists("received_files"):
                 os.makedirs("received_files")
-                
-            with open(f'received_files/{file_name}', 'wb') as received_file:
+
+            with open(f'received_files/{str(file_name)}', 'wb') as received_file:
                 data = conn.recv(file_size)
                 received_file.write(data.decode(FORMAT))
                 received_file.close()
