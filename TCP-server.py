@@ -38,7 +38,7 @@ def receive_file(server_port, ip):
                     data = conn.recv(1024)
                     if not data:
                         break
-                    received_file.write(data.decode(FORMAT))
+                    received_file.write(data)
                 received_file.close()
                 conn.send("Received filedata".encode(FORMAT))
                 print(f"File {file_name} received. Stored as received_files/{file_name}")
