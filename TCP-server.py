@@ -23,7 +23,7 @@ def receive_file(server_port, ip):
             conn, addr = server.accept()
             print(f'Connected by {addr}')
 
-            file_size = struct.unpack("!I", conn.recv(4))  # 4 bytes for file size, 
+            (file_size,) = struct.unpack("!I", conn.recv(4))  # 4 bytes for file size, 
             conn.send("Receive filesize".encode(FORMAT))
 
             file_name = conn.recv(20).decode(FORMAT).strip('\x00') # 20 bytes for file name
@@ -34,7 +34,7 @@ def receive_file(server_port, ip):
                 os.makedirs("received_files")
 
             with open(f'received_files/{str(file_name)}', 'wb') as received_file:
-                data = struct.unpack(f"{file_size}s", conn.recv(file_size))
+                data = conn.recv(file_size)
                 received_file.write(data.decode(FORMAT).strip('\x00'))
                 received_file.close()
                 conn.send("Received filedata".encode(FORMAT))
