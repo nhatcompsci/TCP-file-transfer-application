@@ -4,8 +4,8 @@ FORMAT = "utf-8"
 
 def get_local_ip():
     try:
-        temp_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        temp_socket.connect(("8.8.8.8", 80)) 
+        temp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        temp_socket.connect(("8.8.8.8", 53)) 
         local_ip = temp_socket.getsockname()[0]
         temp_socket.close()
         return local_ip
@@ -36,6 +36,7 @@ def receive_file(server_port, ip):
             with open(f'received_files/{str(file_name)}', 'wb') as received_file:
                 data = conn.recv(file_size)
                 received_file.write(data)
+                file_size -= len(data)
                 received_file.close()
                 conn.send("Received filedata".encode(FORMAT))
                 print(f"File {file_name} received. Stored as received_files/{file_name}")
