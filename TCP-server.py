@@ -23,7 +23,7 @@ def receive_file(server_port, ip):
             conn, addr = server.accept()
             print(f'Connected by {addr}')
 
-            file_size = conn.recv(4)  # 4 bytes for file size, 
+            file_size = conn.recv(4).decode(FORMAT)  # 4 bytes for file size, 
             conn.send("Receive filesize".encode(FORMAT))
 
             file_name = conn.recv(20).decode(FORMAT) # 20 bytes for file name
@@ -35,7 +35,7 @@ def receive_file(server_port, ip):
 
             with open(f'received_files/{str(file_name)}', 'wb') as received_file:
                 data = conn.recv(file_size)
-                received_file.write(data.decode(FORMAT))
+                received_file.write(data.decode(FORMAT).strip('\x00'))
                 received_file.close()
                 conn.send("Received filedata".encode(FORMAT))
                 print(f"File {file_name} received. Stored as received_files/{file_name}")
