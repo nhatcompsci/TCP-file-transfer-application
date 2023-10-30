@@ -1,19 +1,30 @@
 import socket
-import struct
+
+FORMAT = "utf-8"
 
 def send_file(remote_ip, remote_port, local_file):
-    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-        s.connect((remote_ip, remote_port))
+    with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as client:
+        client.connect((remote_ip, remote_port))
 
         with open(local_file, 'rb') as f:
-            file_data = f.read()
             file_size = len(file_data)
-            file_name = local_file.split('/')[-1].encode().ljust(20, b'\x00')
+            client.send(file_size)
+            print(f"server: {client.recv(1024).decode(FORMAT)}")
 
-            s.sendall(struct.pack('!I20s', file_size, file_name))
-            s.sendall(file_data)
+            file_name = local_file
+            client.send(file_name.encode(FORMAT))
+            print(f"server: {client.recv(1024).decode(FORMAT)}")
 
-        print(f"File {local_file} sent.")
+            file_data = f.read()
+            client.send(file_data.encode(FORMAT))
+            print(f"server: {client.recv(1024).decode(FORMAT)}")
+            
+            print(f"File {local_file} sent.")
+            f.close()
+
+        client.close()
+
+        
 
 if __name__ == "__main__":
     import sys
