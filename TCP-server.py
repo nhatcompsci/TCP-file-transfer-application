@@ -1,13 +1,24 @@
 import socket
 
-IP = socket.gethostbyname(socket.gethostname())
 FORMAT = "utf-8"
 
-def receive_file(server_port):
+def get_local_ip():
+    try:
+        temp_socket = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        temp_socket.connect(("8.8.8.8", 80)) 
+        local_ip = temp_socket.getsockname()[0]
+        temp_socket.close()
+        return local_ip
+    except Exception as e:
+        print(f"Error getting local IP: {e}")
+        return None
+
+def receive_file(server_port, ip):
     with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as server:
-        server.bind((IP, server_port))
+        
+        server.bind((ip, server_port))
         server.listen()
-        print(f"Server ({IP}) is listening on port {server_port}...")
+        print(f"Server ({ip}) is listening on port {server_port}...")
         while True:
             conn, addr = server.accept()
             print(f'Connected by {addr}')
@@ -39,4 +50,7 @@ if __name__ == "__main__":
         sys.exit(1)
     print("Server is starting.")
 
-    receive_file(int(sys.argv[1]))
+    ip = get_local_ip()
+    if not ip:
+        sys.exit(1)
+    receive_file(int(sys.argv[1]), ip)
