@@ -34,8 +34,8 @@ def receive_file(server_port, ip):
                 os.makedirs("received_files")
 
             with open(f'received_files/{str(file_name)}', 'w') as received_file:
-                data = conn.recv(file_size)
-                received_file.write(data.strip('\x00').decode(FORMAT))
+                data = conn.recv(file_size).strip('\x00')
+                received_file.write(data.decode(FORMAT))
                 received_file.close()
                 conn.send("Received filedata".encode(FORMAT))
                 print(f"File {file_name} received. Stored as received_files/{file_name}")
