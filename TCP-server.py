@@ -34,11 +34,12 @@ def receive_file(server_port, ip):
                 os.makedirs("received_files")
 
             with open(f'received_files/{str(file_name)}', 'wb') as received_file:
-                while True:
-                    data = conn.recv(1024)
+                while file_size > 0:
+                    data = conn.recv(min(1024, file_size))
                     if not data:
                         break
                     received_file.write(data)
+                    file_size -= len(data)
                 received_file.close()
                 conn.send("Received filedata".encode(FORMAT))
                 print(f"File {file_name} received. Stored as received_files/{file_name}")
